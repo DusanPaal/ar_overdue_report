@@ -1,0 +1,6 @@
+pywin32==304
+XlsxWriter==3.0.3
+pandas==1.4.3
+PyYAML==6.0
+exchangelib==4.7.3
+openpyxl==3.0.10

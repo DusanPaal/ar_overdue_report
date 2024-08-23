@@ -1,0 +1,30 @@
+sap:
+  system: P25
+
+data:
+  # names of layouts used in FBL5N d UDM_DIPUTE
+  fbl5n_layout: OVERDUES
+  dms_layout: OVERDUES
+
+report:
+  # the report name consists of a fixed string and placeholders 
+  # that can be replaced by actual values:
+  # - $entity$: to be replaced by a company code or a worklist name
+  # - $company_code$: to be replaced by a company code value
+  # - $date$: to be replaced by the overdue date provided by the user
+  report_name: AR_Overdue_Report_$entity$_$company_code$_$date$.xlsx
+  
+messages:
+  # params for management of emails
+  requests:
+    # for fetching user mails
+    account:
+    mailbox:
+    server:
+  notifications:
+    # for sending notifications to users
+    send:
+    sender:
+    subject:
+    host:
+    port:
