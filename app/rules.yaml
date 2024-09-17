@@ -18,30 +18,12 @@
 #   sales_sheet_name: Sales
 # =======================
 
-OBI:
+Customer:
   country: "Germany"
   case_id_rx: "10\\d{6}" 
   company_code: "1001"
   type: worklist
-  queries:
-    "Status == 1 and Processor == 'A.MARKUSKOVA'": "Klärung bei CS Nearshore."
-    "Status == 1 and Processor == 'V.NEUPAUER'": "Klärung bei CS Onshore."
-    "Clearing_Document.notna()": "Geklärt duch Ausgleich."
-    "Status == 2 and Document_Type == 'DZ/DA' and Case_ID.notna()": "Klärung bei AR."
-    "Status == 2 and Root_Cause == 'L01' and Lower_Status_Sales.str.contains('storno ')": "Stornobeleg erhalten."
-    "Status == 2 and Root_Cause == 'L01' and Lower_Status_Sales.str.contains('overspr')": "Stornoversprechen erhalten."
-    "Status == 2 and Root_Cause == 'L01' and Lower_Status_Sales.str.contains('(rz-|zahlungs)verspr', regex=True)": "Zahlungsversprechen erhalten."
-    "Status == 2 and Root_Cause == 'L06' and Lower_Status_Sales.str.contains('free')": "Wird geschlossen mit einem GH."
-    "Status == 2 and Document_Type == 'DG' and DMS_Assignment.isna()": "Abzug folgt."
-    "Status == 2 and Document_Type == 'DG' and DMS_Assignment.notna()": "Klärung bei AR."
-    "Document_Type == 'DG' and Case_ID.isna()": "GS ohne DP - Klärung bei AR."
-    "Lower_Text.str.contains('\\?') and Case_ID.isna() and DC_Amount < 0": "Storno ohne DP - Klärung bei AR und OBI."
-    "Lower_Text.str.contains('\\?') and Case_ID.isna() and DC_Amount > 0": "Abzug ohne DP - Klärung bei AR u. KD"
-    "Status == 3 and DC_Amount < 0 or Lower_Text.str.contains('(free|gh|guthaben)', regex = True)": "Guthaben."
-    "Status == 2 and Root_Cause == 'L00' and 'keine' not in Autoclaims_Note": "RF bei AR"
-    "Status != 3 and Status.notna() and Processor == 'B.KNOBLOCH' and DC_Amount < 0": "Klärung bei B. Knobloch"
-    "Head_Office == 1000194 and ['gh', 'guthaben', 'free'] in Lower_Text and DC_Amount < 0 ": "Bonusguthaben - Klärung bei B. Knobloch"
-    "(Status == 3 or Status.isna()) and Processor == 'B.KNOBLOCH' and DC_Amount < 0": "Bonusguthaben - Klärung bei B. Knobloch"
+  queries: # list of pandas queries (str) to apply on the accounting data
 
   report_fields:
     - Document_Number
@@ -74,66 +56,6 @@ OBI:
     - Fax_Number
     - Processor
     - DMS_Assignment
-
-  report_sheets:
-      data_sheet_name: Data
-
-AUSTRIA:
-  country: "Austria"
-  case_id_rx: "4000\\d{5}"
-  type: country
-  company_code: "1072"
-  queries:
-    "Status == 1 and ['L.LISKOVA', 'M.GUNISOVA', 'N.JAVORKA', 'JANA.LISYOVA', 'A.MARKUSKOVA'] in Processor": "Klärung bei CS Nearshore."
-    "Status == 1 and Processor == 'V.NEUPAUER'": "Klärung bei CS Onshore."
-    "Clearing_Document.notna()": "Geklärt duch Ausgleich."
-    "Status == 2 and Root_Cause == 'L01' and Lower_Status_Sales.str.contains('storno ')": "Stornobeleg erhalten."
-    "Status == 2 and Root_Cause == 'L01' and Lower_Status_Sales.str.contains('overspr')": "Stornoversprechen erhalten."
-    "Status == 2 and Root_Cause == 'L01' and Lower_Status_Sales.str.contains('(rz-|zahlungs)verspr', regex=True)": "Zahlungsversprechen erhalten."
-    "Status == 2 and Root_Cause == 'L06' and Lower_Status_Sales.str.contains('free')": "Wird geschlossen mit einem GH."
-    "Status == 2 and Document_Type == 'DG' and DMS_Assignment.isna()": "Abzug folgt."
-    "Status == 2 and Document_Type == 'DG' and DMS_Assignment.notna()": "Klärung bei AR."
-    "Document_Type == 'DG' and Case_ID.isna()": "GS ohne DP - Klärung bei AR."
-    "Status == 2 and Document_Type == 'DZ/DA' and Case_ID.notna()": "Klärung bei AR."
-    "Document_Type == 'DG' and Lower_Text.str.contains('%')": "Bonusgutschrift ohne Abzug."
-    "Lower_Text.str.contains('\\?') and DC_Amount < 0": "Storno ohne DP - Klärung bei AR und KD."
-    "Lower_Text.str.contains('\\?') and DC_Amount > 0": "Abzug ohne DP - Klärung bei AR und KD."
-    "Status == 3 and DC_Amount < 0 or Lower_Text.str.contains('(free|gh|guthaben)', regex = True)": "Guthaben."
-    "Status == 2 and Root_Cause == 'L00' and 'keine' not in Autoclaims_Note": "RF bei AR"
-    "Status != 3 and Status.notna() and Category == '8Y3'": "Klärung bei Bonusabteilung"
-    "(Status == 3 and Category == '8Y3') or Status.isna()": "Bonusguthaben - Bonusabteilung"
-    "Status == 1 and 'markant' in Lower_Customer_Name and Category == 'Penalties'": "In Klärung bei KAM"
-    "Status == 1 and ['rewe', 'adeg'] in Lower_Customer_Name and Category == 'Penalties'": "In Klärung bei KAM"
-    "Status == 1 and Document_Type == 'DG' and Lower_Text.str.contains('(ygw|retoure|yro)', regex=True) and Channel == 'Trade'": "Gutschrift ohne Abzug"
-
-  report_fields:
-    - Head_Office
-    - Customer_Name
-    - Document_Date
-    - Due_Date
-    - Clearing_Date
-    - Overdue_Days
-    - Document_Type
-    - Document_Number
-    - Clearing_Document
-    - DC_Amount
-    - Text
-    - Case_ID
-    - Status
-    - Status_Sales
-    - Note
-    - Status_AC
-    - Created_On
-    - Category
-    - Category_Desc
-    - Root_Cause
-    - Autoclaims_Note
-    - Fax_Number
-    - Processor
-    - DMS_Assignment
-    - Salesperson
-    - Channel
-    - Country
 
   report_sheets:
     data_sheet_name: Data
